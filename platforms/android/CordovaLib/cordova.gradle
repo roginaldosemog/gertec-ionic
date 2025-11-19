@@ -29,9 +29,9 @@ String doEnsureValueExists(filePath, props, key) {
 
 String doGetProjectTarget() {
     def props = new Properties()
-    def propertiesFile = 'project.properties';
+    def propertiesFile = 'project.properties'
     if(!(file(propertiesFile).exists())) {
-      propertiesFile = '../project.properties';
+      propertiesFile = '../project.properties'
     }
     file(propertiesFile).withReader { reader ->
         props.load(reader)
@@ -134,10 +134,18 @@ def doExtractIntFromManifest(name) {
 
 def doExtractStringFromManifest(name) {
     def manifestFile = file(android.sourceSets.main.manifest.srcFile)
-    def pattern = Pattern.compile(name + "=\"(\\S+)\"")
+
+    // New pattern: Tolerates zero or more spaces (\s*) around the '='
+    def pattern = Pattern.compile(name + "\\s*=\\s*\"([^\"]+)\"")
+
     def matcher = pattern.matcher(manifestFile.getText())
-    matcher.find()
-    return matcher.group(1)
+
+    if (matcher.find()) {
+        return matcher.group(1)
+    } else {
+        // Log an error to know exactly what failed
+        throw new IllegalStateException("No match found for attribute '${name}' in AndroidManifest.xml")
+    }
 }
 
 def doPromptForPassword(msg) {
@@ -149,8 +157,8 @@ def doPromptForPassword(msg) {
                     label(text: msg)
                     def input = passwordField()
                     button(defaultButton: true, text: 'OK', actionPerformed: {
-                        ret = input.password;
-                        dispose();
+                        ret = input.password
+                        dispose()
                     })
                 }
             }
@@ -160,7 +168,7 @@ def doPromptForPassword(msg) {
         }
         return new String(ret)
     } else {
-        return System.console().readPassword('\n' + msg);
+        return System.console().readPassword('\n' + msg)
     }
 }
 
