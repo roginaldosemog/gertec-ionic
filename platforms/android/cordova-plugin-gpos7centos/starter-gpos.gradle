@@ -1,10 +1,6 @@
 // Enable local dependencies repository
 repositories {    
     google()
-    jcenter()
-    flatDir {
-        dirs 'src/main/libs'
-    }
 }
 
 android {
@@ -20,10 +16,9 @@ dependencies {
 
     // Lib para código de barras
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-    implementation ('com.journeyapps:zxing-android-embedded:4.2.0')
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.zxing:core:3.2.0'
     
     // Lib exclusiva para o GPOS700
-    implementation(name: 'payment-1.14.10.181016', ext: 'aar')
-
+    implementation files('src/main/libs/payment-1.14.10.181016.aar')
 }
